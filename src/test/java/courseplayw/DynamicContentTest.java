@@ -20,8 +20,7 @@ public class DynamicContentTest {
     @BeforeEach
     void setUp() {
         playwright = Playwright.create();
-        browser = playwright.chromium()
-                .launch(new BrowserType.LaunchOptions().setHeadless(false));
+        browser = playwright.chromium().launch(new BrowserType.LaunchOptions().setHeadless(false));
         context = browser.newContext();
         page = context.newPage();
     }
@@ -43,21 +42,17 @@ public class DynamicContentTest {
             seleniumLink.waitFor(new Locator.WaitForOptions().setState(WaitForSelectorState.VISIBLE));
             Assertions.assertTrue(seleniumLink.isVisible(), "Ссылка не отображается");
 
-            Page newPage = context.waitForPage(() -> {
-                seleniumLink.click();
-            });
+            Page newPage = context.waitForPage(seleniumLink::click);
 
             newPage.waitForLoadState(LoadState.LOAD);
 
             Assertions.assertTrue(
-                    newPage.url().startsWith("https://elementalselenium.com/"), "Фактический URL: " + newPage.url()
-            );
-            Assertions.assertTrue(newPage.isVisible("h1 >> text='Elemental Selenium'"), "Заголовок не найден"
-            );
+                    newPage.url().startsWith("https://elementalselenium.com/"), "Фактический URL: " + newPage.url());
+            Assertions.assertTrue(newPage.isVisible("h1 >> text='Elemental Selenium'"), "Заголовок не найден");
 
             newPage.close();
 
-        } catch (Exception e) {
+        } catch (AssertionError e) {
 
             page.screenshot(new Page.ScreenshotOptions()
                     .setPath(Paths.get("dynamic-loading-error.png")));
