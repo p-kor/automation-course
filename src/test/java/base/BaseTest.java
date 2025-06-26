@@ -4,7 +4,7 @@ import com.microsoft.playwright.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-import java.util.Objects;
+import java.util.Optional;
 
 public class BaseTest {
     protected Playwright playwright;
@@ -22,17 +22,9 @@ public class BaseTest {
 
     @AfterEach
     protected void tearDown() {
-        if (Objects.nonNull(page)) {
-            page.close();
-        }
-        if (Objects.nonNull(context)) {
-            context.close();
-        }
-        if (Objects.nonNull(browser)) {
-            browser.close();
-        }
-        if (Objects.nonNull(playwright)) {
-            playwright.close();
-        }
+        Optional.ofNullable(page).ifPresent(Page::close);
+        Optional.ofNullable(context).ifPresent(BrowserContext::close);
+        Optional.ofNullable(browser).ifPresent(Browser::close);
+        Optional.ofNullable(playwright).ifPresent(Playwright::close);
     }
 }
