@@ -1,6 +1,7 @@
-import base.BaseTest;
+import config.CustomOptions;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Route;
+import com.microsoft.playwright.junit.UsePlaywright;
 import com.microsoft.playwright.options.AriaRole;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -9,11 +10,12 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class StatusCodeInterceptionTest extends BaseTest {
+@UsePlaywright(CustomOptions.class)
+public class StatusCodeInterceptionTest {
 
     @Test
     @SuppressWarnings("UnnecessaryLocalVariable")
-    public void testMockedStatusCode() {
+    public void testMockedStatusCode(Page page) {
 
         String responseText = "Mocked Success Response";
         String responseBody = "<h3>" + responseText + "</h3>";
@@ -25,7 +27,7 @@ public class StatusCodeInterceptionTest extends BaseTest {
                         .setBody(responseBody)
                 );
 
-        // Перехват запроса к /status_codes/404
+        // rule for request to /status_codes/404
         page.route("**/status_codes/404", mockStatusCodeHandler);
 
         page.navigate("https://the-internet.herokuapp.com/status_codes");
@@ -33,7 +35,10 @@ public class StatusCodeInterceptionTest extends BaseTest {
         page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("404")).click();
         page.waitForLoadState();
 
-        page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get("status_codes.png")));
+        Page.ScreenshotOptions screenshotOptions = new Page.ScreenshotOptions()
+                .setPath(Paths.get("status_codes.png"))
+                .setFullPage(true);
+        page.screenshot(screenshotOptions);
 
         String expectedResult = responseText;
         String actualResult = page.getByRole(AriaRole.HEADING,new Page.GetByRoleOptions().setLevel(3)).innerText();
