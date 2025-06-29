@@ -1,41 +1,28 @@
-name: Run Tests
-on: [push, pull_request]
+name: Java CI
+
+on: [push]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright/java:v1.50.0-noble
     steps:
       - uses: actions/checkout@v4
 
-      - name: Clean Maven cache
-        run: mvn dependency:purge-local-repository
-
-      - name: Cache Maven packages
+      - name: Cache Maven repository
         uses: actions/cache@v3
         with:
           path: ~/.m2/repository
-          key: maven-${{ hashFiles('pom.xml') }}
-
-      - name: Cache Playwright browsers
-        uses: actions/cache@v3
-        with:
-          path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}
-
-      - name: Set up Java 17
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: '17'
-
-      - name: Resolve dependencies
-        run: mvn install -DskipTests
-
-      - name: Install Playwright browsers
-        run: mvn exec:java -Dexec.mainClass="com.microsoft.playwright.CLI" -Dexec.args="install chromium"
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
 
       - name: Run tests
-        run: mvn test -Dtest=ExampleTest
+        run: |
+          export DISPLAY=:0
+          Xvfb :0 -screen 0 1280x720x24 >/dev/null 2>&1 &  
+          mvn clean test -B
 
       - name: Upload test results
         if: always()
