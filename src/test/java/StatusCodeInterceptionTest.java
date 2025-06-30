@@ -7,11 +7,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.function.Consumer;
 
 @UsePlaywright(CustomOptions.class)
 public class StatusCodeInterceptionTest {
+
+    private static final String screenshotBasePath = "./target/screenshots/StatusCodeInterceptionTest_" + LocalDateTime.now() + "/";
 
     @Test
     @SuppressWarnings("UnnecessaryLocalVariable")
@@ -36,7 +39,7 @@ public class StatusCodeInterceptionTest {
         page.waitForLoadState();
 
         Page.ScreenshotOptions screenshotOptions = new Page.ScreenshotOptions()
-                .setPath(Paths.get("status_codes.png"))
+                .setPath(Paths.get(screenshotBasePath + "status_codes.png"))
                 .setFullPage(true);
         page.screenshot(screenshotOptions);
 
