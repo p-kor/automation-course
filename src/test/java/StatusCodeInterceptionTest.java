@@ -8,13 +8,15 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.function.Consumer;
 
 @UsePlaywright(CustomOptions.class)
 public class StatusCodeInterceptionTest {
 
-    private static final String screenshotBasePath = "./target/screenshots/StatusCodeInterceptionTest_" + LocalDateTime.now() + "/";
+    private static final String screenshotBasePath = "./target/screenshots/StatusCodeInterceptionTest_" +
+            LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss")) + "/";
 
     @Test
     @SuppressWarnings("UnnecessaryLocalVariable")
@@ -44,7 +46,7 @@ public class StatusCodeInterceptionTest {
         page.screenshot(screenshotOptions);
 
         String expectedResult = responseText;
-        String actualResult = page.getByRole(AriaRole.HEADING,new Page.GetByRoleOptions().setLevel(3)).innerText();
+        String actualResult = page.getByRole(AriaRole.HEADING, new Page.GetByRoleOptions().setLevel(3)).innerText();
         String errorText = "The result page text should contain '" + responseText + "'";
 
         Assertions.assertEquals(expectedResult, actualResult, errorText);
