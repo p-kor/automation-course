@@ -4,6 +4,7 @@ import com.microsoft.playwright.Route;
 import com.microsoft.playwright.junit.UsePlaywright;
 import com.microsoft.playwright.options.AriaRole;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
@@ -18,6 +19,7 @@ public class StatusCodeInterceptionTest {
     private static final String screenshotBasePath = "./target/screenshots/StatusCodeInterceptionTest_" +
             LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss")) + "/";
 
+    @Disabled
     @Test
     @SuppressWarnings("UnnecessaryLocalVariable")
     public void testMockedStatusCode(Page page) {

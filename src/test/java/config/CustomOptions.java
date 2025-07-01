@@ -9,6 +9,7 @@ public class CustomOptions implements OptionsFactory {
     @Override
     public Options getOptions() {
         return new Options()
+                .setBrowserName("chromium")
                 .setHeadless(true)
                 .setContextOptions(new Browser.NewContextOptions()
                         .setViewportSize(1920, 1080));
